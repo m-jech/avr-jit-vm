@@ -1,1 +1,25 @@
-// TODO: implement fallbacks for all avr instructions
+#include "instructions.h"
+
+
+// ---------- DUMMIES FOR MISSING INSTRUCTIONS ----------
+{% for ins in instructions %}
+__attribute__((weak))
+int execute_{{ ins.name }}(__attribute__((unused)) struct cpu_state *cpu_state) {
+    fprintf(stderr, "{{ ins.name }} not implemented\n");
+    exit(EXIT_FAILURE);
+}
+{% endfor %}
+
+// ----------------- DUMMY FOR UNDEFINED OPCODE -----------------
+__attribute__((weak))
+int execute_UNDEFINED(__attribute__((unused)) struct cpu_state *cpu_state) {
+    fprintf(stderr, "Undefined instruction\n");
+    exit(EXIT_FAILURE);
+}
+
+// ------------------------- DECODE TABLE -------------------------
+execute_func_type decode_table[65536] = {
+{% for name in table %}
+    execute_{{ name }}{% if not loop.last %},{% endif %}
+{% endfor %}
+};

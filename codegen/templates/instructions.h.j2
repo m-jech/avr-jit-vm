@@ -1,0 +1,19 @@
+#ifndef INSTRUCTIONS_H
+#define INSTRUCTIONS_H
+
+#include "core/cpu.h"
+
+
+// ---------- FUNCTION DECLARATIONS (All instructions) ----------
+{% for ins in instructions %}
+int execute_{{ ins.name }}(struct cpu_state *cpu_state);
+{% endfor %}
+
+int execute_UNDEFINED(struct cpu_state *cpu_state);
+
+// ---------- DECODE TABLE ----------
+
+typedef int (*execute_func_type)(struct cpu_state *cpu_state);
+extern execute_func_type decode_table[65536];
+
+#endif  // INSTRUCTIONS_H
